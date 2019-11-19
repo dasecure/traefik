@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  traefik:
+    container_name: traefik
+    image: traefik:1.7.2-alpine
+    environment:
+      DO_AUTH_TOKEN: "3365683ce8fcb983a127fd4b0cc07f58bee45c184bd3c5c4f86c0c561718054b"
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - '$PWD/traefik.toml:/traefik.toml'
+      - '$PWD/acme.json:/acme.json'
+    ports:
+      - '80:80'
+      - '443:443'
+    networks:
+      - web
+    labels:
+      - traefik.frontend.rule=Host:monitor.wifienabler.com
+      - traefik.port=8080
+
+networks:
+  web:
+    external: true

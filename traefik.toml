@@ -1,0 +1,40 @@
+logLevel="DEBUG"
+defaultEntryPoints = ["http", "https"]
+
+[entryPoints]
+  [entryPoints.dashboard]
+    address = ":8080"
+    [entryPoints.dashboard.auth]
+    [entryPoints.dashboard.auth.basic]
+    users = ["admin:$apr1$P2QW61W8$E6WAcX69MvwyzH8k9ROoR."]
+  [entryPoints.http]
+    address = ":80"
+    [entryPoints.http.redirect]
+    entryPoint = "https"
+  [entryPoints.https]
+    address = ":443"
+    [entryPoints.https.tls]
+
+[api]
+entrypoint="dashboard"
+
+[acme]
+  email = "vincent@wifienabler.com"
+  storage = "acme.json"
+  entryPoint = "https"
+  onHostRule = true
+#  caServer="https://acme-staging-v02.api.letsencrypt.org/directory"
+
+  [acme.dnsChallenge]
+    provider="digitalocean"
+    delayBeforeCheck=0
+
+  [[acme.domains]]
+    main = "*.wifienabler.com"
+    sans = ["wifienabler.com"]
+
+[docker]
+  endpoint="unix:///var/run/docker.sock"
+  domain = "wifienabler.com"
+  watch = true
+  network = "web"
